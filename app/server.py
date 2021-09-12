@@ -9,14 +9,14 @@ class ClientConnectionThread(threading.Thread):
     Поток, выделенный под одного клиента
     """
     def __init__(self, client_socket, client_addr):
-        super().__init__(self)
+        super().__init__()
         self.client_socket = client_socket
         self.client_addr = client_addr
 
     def run(self):
         try:
             while True:
-                data = self.client_sock.recv(1024)
+                data = self.client_socket.recv(1024)
                 if not data:
                     break
                 print(data.decode())
@@ -33,7 +33,7 @@ class Server:
     """
     def __init__(self, port=55000):
         self.server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        self.server_socket.bind(('', port))
+        self.server_socket.bind((settings.IP, port))
         self.server_socket.listen()
 
     def run(self):
@@ -43,7 +43,7 @@ class Server:
 
     def accept_connection(self):
         client_socket, client_addr = self.server_socket.accept()
-        print(f'Connected ({client_addr})')
+        print('Connected', client_addr)
         return client_socket, client_addr
 
     def create_new_thread(self, client_socket, client_addr):
